@@ -9,9 +9,10 @@ import dk.trustworks.framework.service.ServiceRegistry;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -19,6 +20,8 @@ import java.util.*;
  * Created by hans on 18/03/15.
  */
 public abstract class DefaultHandler implements HttpHandler {
+
+    private static final Logger logger = LogManager.getLogger();
 
     protected final ObjectMapper mapper;
 
@@ -37,7 +40,7 @@ public abstract class DefaultHandler implements HttpHandler {
             exchange.dispatch(this);
             return;
         }
-        System.out.println("handleRequest: "+entity);
+        logger.debug("handleRequest: " + entity);
 
         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
 
@@ -52,21 +55,21 @@ public abstract class DefaultHandler implements HttpHandler {
                     break;
             }
         } else if (relativePath.length > 1 && relativePath[1].equals("search")) {
-            System.out.println("DefaultHandler.handleRequest: SEARCH");
-            System.out.println("relativePath[2] = " + relativePath[2]);
+            logger.debug("DefaultHandler.handleRequest: SEARCH");
+            logger.debug("relativePath[2] = " + relativePath[2]);
             handleSearch(exchange, relativePath[2]);
         } else if (relativePath.length > 1 && commands.contains(relativePath[1])) {
-            System.out.println("DefaultHandler.handleRequest: " + relativePath[1]);
+            logger.debug("DefaultHandler.handleRequest: " + relativePath[1]);
             this.getClass().getDeclaredMethod(relativePath[1], HttpServerExchange.class, String[].class).invoke(this, exchange, relativePath);
         } else if (relativePath.length > 1) {
             switch(exchange.getRequestMethod().toString()) {
                 case "GET":
-                    System.out.println("DefaultHandler.handleRequest: GET");
-                    System.out.println("relativePath = " + relativePath[1]);
+                    logger.debug("DefaultHandler.handleRequest: GET");
+                    logger.debug("relativePath = " + relativePath[1]);
                     findByUUID(exchange, relativePath[1]);
                     break;
                 case "POST":
-                    System.out.println("DefaultHandler.handleRequest: POST/UPDATE");
+                    logger.debug("DefaultHandler.handleRequest: POST/UPDATE");
                     updateEntity(exchange, relativePath[1]);
                     break;
             }
@@ -109,8 +112,8 @@ public abstract class DefaultHandler implements HttpHandler {
     }
 
     protected void handleSearch(HttpServerExchange exchange, String searchMethodName) throws Exception {
-        System.out.println("DefaultHandler.handleSearch: "+this.getClass().toString());
-        System.out.println("DefaultHandler.handleSearch: " + searchMethodName);
+        logger.debug("DefaultHandler.handleSearch: " + this.getClass().toString());
+        logger.debug("DefaultHandler.handleSearch: " + searchMethodName);
         Object result2 = getService().getClass().getDeclaredMethod(searchMethodName, Map.class).invoke(getService(), exchange.getQueryParameters());
         if(result2.getClass().equals(HashMap.class)) {
             exchange.getResponseSender().send(mapper.writeValueAsString(result2));
@@ -134,11 +137,11 @@ public abstract class DefaultHandler implements HttpHandler {
         if(services.containsKey(key)) {
             if(map.size() == 0) return childEntities;
             Map<String, Object> projection = services.get(key).getOneEntity(services.get(key).getResourcePath(),  map.get(key).toString());
-            System.out.println("projection = " + projection);
+            logger.debug("projection = " + projection);
             if(projectionTree.size() > 0) projection.putAll(loadChildEntities(projection, projectionTree));
             childEntities.put(key.substring(0, key.length() - 4), projection);
         }
-        System.out.println("projectionTree = " + projectionTree.size());
+        logger.debug("projectionTree = " + projectionTree.size());
 
         return childEntities;
     }

@@ -6,6 +6,8 @@ import org.apache.curator.retry.RetryNTimes;
 import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +16,8 @@ import java.util.Map;
  * Created by hans on 25/04/15.
  */
 public class Locator {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static Locator instance;
 
@@ -41,11 +45,11 @@ public class Locator {
     }
 
     public String resolveURL(String resource) {
-        System.out.println("Resource: " + resource);
+        logger.debug("Resource: " + resource);
         ServiceProvider serviceProvider;
         String uriSpec = "";
         if(!serviceProviders.containsKey(resource)) {
-            System.out.println("New service provider");
+            logger.debug("New service provider");
             serviceProvider = serviceDiscovery
                     .serviceProviderBuilder()
                     .serviceName(resource)
@@ -57,7 +61,7 @@ public class Locator {
                 throw new RuntimeException(e);
             }
         } else {
-            System.out.println("Existing service provider");
+            logger.debug("Existing service provider");
             serviceProvider = serviceProviders.get(resource);
         }
         try {

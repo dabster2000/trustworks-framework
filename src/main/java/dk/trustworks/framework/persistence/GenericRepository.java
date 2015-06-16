@@ -2,6 +2,8 @@ package dk.trustworks.framework.persistence;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dk.trustworks.framework.service.DefaultRestInterface;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -14,6 +16,8 @@ import java.util.Map;
  * Created by hans on 17/03/15.
  */
 public abstract class GenericRepository implements DefaultRestInterface {
+
+    private static final Logger logger = LogManager.getLogger();
 
     protected final DataSource database;
 
@@ -40,9 +44,9 @@ public abstract class GenericRepository implements DefaultRestInterface {
 
     @Override
     public Map<String, Object> getOneEntity(String entityName, String uuid) {
-        System.out.println("GenericRepository.getOneEntity");
-        System.out.println("entityName = " + entityName);
-        System.out.println("uuid = " + uuid);
+        logger.debug("GenericRepository.getOneEntity");
+        logger.debug("entityName = " + entityName);
+        logger.debug("uuid = " + uuid);
         Map<String, Object> result = new HashMap<>();
         try {
             Connection connection = database.getConnection();
@@ -83,7 +87,7 @@ public abstract class GenericRepository implements DefaultRestInterface {
     protected void testForNull(JsonNode jsonNode, String[] values) {
         for (String value : values) {
             if(jsonNode.get(value).isNull() || jsonNode.get(value).asText().trim() == "") {
-                System.out.println("value is null = " + value);
+                logger.debug("value is null = " + value);
                 throw new RuntimeException(value + " cannot be null or empty");
             }
         }

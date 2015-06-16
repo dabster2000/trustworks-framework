@@ -4,16 +4,21 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RemoteEntity {
+
+    private static final Logger logger = LogManager.getLogger();
+
     public RemoteEntity() {
     }
 
     public Map<String, Object> getOneClientEntity(String resource, String resourceUUID) {
-        System.out.println("remote getOneClientEntity...");
+        logger.debug("remote getOneClientEntity...");
         try {
             HttpResponse<JsonNode> jsonResponse = Unirest.get(Locator.getInstance().resolveURL("clientservice")+"/api/"+resource+"/"+resourceUUID)
                     .header("accept", "application/json")
@@ -34,7 +39,7 @@ public class RemoteEntity {
     }
 
     public Map<String, Object> getOneUserEntity(String resource, String resourceUUID) {
-        System.out.println("remote getOneUserEntity...");
+        logger.debug("remote getOneUserEntity...");
         try {
             HttpResponse<JsonNode> jsonResponse = Unirest.get(Locator.getInstance().resolveURL("userservice")+"/api/"+resource+"/"+resourceUUID)
                     .header("accept", "application/json")
