@@ -2,6 +2,7 @@ package dk.trustworks.framework.persistence;
 
 import org.apache.commons.dbcp2.*;
 import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
@@ -16,6 +17,8 @@ public final class Helper {
 
     private final DataSource mysql;
 
+    private final Sql2o sql2o;
+
     private Helper() {
         Properties properties = new Properties();
         try (InputStream in = Helper.class.getResourceAsStream("server.properties")) {
@@ -28,14 +31,16 @@ public final class Helper {
                 properties.getProperty("mysql.uri"),
                 properties.getProperty("mysql.user"),
                 properties.getProperty("mysql.password"));
+
+        sql2o = new Sql2o(mysql);
     }
 
     public static Helper createHelper() {
         return instance == null?instance = new Helper():instance;
     }
 
-    public DataSource getDatabase() {
-        return mysql;
+    public Sql2o getDatabase() {
+        return sql2o;
     }
 
     /**

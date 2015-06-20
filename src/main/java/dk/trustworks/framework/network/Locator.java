@@ -58,6 +58,7 @@ public class Locator {
             try {
                 serviceProvider.start();
             } catch (Exception e) {
+                logger.error(e);
                 throw new RuntimeException(e);
             }
         } else {
@@ -67,8 +68,10 @@ public class Locator {
         try {
             uriSpec = serviceProvider.getInstance().buildUriSpec();
         } catch (Exception e) {
+            logger.error(e);
             throw new RuntimeException(e);
         }
+        logger.debug(uriSpec);
         return uriSpec;
     }
 }
