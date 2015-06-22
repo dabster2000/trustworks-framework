@@ -1,7 +1,7 @@
 package dk.trustworks.framework.persistence;
 
-import org.apache.commons.dbcp2.*;
-import org.apache.commons.pool2.impl.GenericObjectPool;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
@@ -56,16 +56,25 @@ public final class Helper {
                                     String user,
                                     String password) {
 
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
-                uri, user, password);
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(uri);
+        config.setUsername(user);
+        config.setPassword(password);
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        HikariDataSource ds = new HikariDataSource(config);
+
+        //ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(uri, user, password);
         //
         // This constructor modifies the connection pool, setting its connection
         // factory to this.  (So despite how it may appear, all of the objects
         // declared in this method are incorporated into the returned result.)
         //
-        PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(
-                connectionFactory, null);
+        //PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(connectionFactory, null);
 
+        /*
         GenericObjectPool<PoolableConnection> connectionPool = new GenericObjectPool<>(poolableConnectionFactory);
         connectionPool.setMaxTotal(256);
         connectionPool.setMaxIdle(256);
@@ -73,5 +82,7 @@ public final class Helper {
         poolableConnectionFactory.setPool(connectionPool);
 
         return new PoolingDataSource<>(connectionPool);
+        */
+        return ds;
     }
 }
