@@ -11,6 +11,7 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -40,6 +41,7 @@ public abstract class DefaultHandler implements HttpHandler {
             exchange.dispatch(this);
             return;
         }
+        ThreadContext.push(UUID.randomUUID().toString());
         logger.debug("handleRequest: " + entity);
 
         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
@@ -75,6 +77,7 @@ public abstract class DefaultHandler implements HttpHandler {
             }
 
         }
+        ThreadContext.pop();
     }
 
     protected void getAllEntities(HttpServerExchange exchange) throws JsonProcessingException {
