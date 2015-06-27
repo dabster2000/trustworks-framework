@@ -63,6 +63,7 @@ public final class Helper {
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.addDataSourceProperty("maximumPoolSize", "5");
 
         HikariDataSource ds = new HikariDataSource(config);
 
