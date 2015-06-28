@@ -73,8 +73,8 @@ public final class Helper {
         config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.addDataSourceProperty("maximumPoolSize", "5");
+        //config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.addDataSourceProperty("maximumPoolSize", "10");
         HikariDataSource ds = new HikariDataSource(config);
 
         //ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(uri, user, password);
