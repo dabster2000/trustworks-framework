@@ -2,6 +2,8 @@ package dk.trustworks.framework.persistence;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
@@ -13,6 +15,7 @@ import java.util.Properties;
  */
 public final class Helper {
 
+    private static final Logger log = LogManager.getLogger(Helper.class);
     private static Helper instance;
 
     private final DataSource mysql;
@@ -20,6 +23,11 @@ public final class Helper {
     private final Sql2o sql2o;
 
     private Helper() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            log.error("LOG00820:", e);
+        }
         Properties properties = new Properties();
         try (InputStream in = Helper.class.getResourceAsStream("server.properties")) {
             properties.load(in);
