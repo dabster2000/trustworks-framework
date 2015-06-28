@@ -65,19 +65,18 @@ public final class Helper {
     private static DataSource newDataSource(String uri,
                                     String user,
                                     String password) {
-        log.debug("uri: " + uri);
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(uri);
         config.setUsername(user);
         config.setPassword(password);
-        config.setDriverClassName("com.impossibl.postgres.jdbc.PGDriver");
+        //config.setDriverClassName("com.impossibl.postgres.jdbc.PGDriver");
 
         //config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
 
-        //config.addDataSourceProperty("cachePrepStmts", "true");
-        //config.addDataSourceProperty("prepStmtCacheSize", "250");
-        //config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        //config.addDataSourceProperty("maximumPoolSize", "10");
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.addDataSourceProperty("maximumPoolSize", "10");
 
         //ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(uri, user, password);
         //
