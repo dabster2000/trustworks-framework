@@ -65,12 +65,12 @@ public final class Helper {
     private static DataSource newDataSource(String uri,
                                     String user,
                                     String password) {
-        log.debug("uri: "+uri);
+        log.debug("uri: " + uri);
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(uri);
         config.setUsername(user);
         config.setPassword(password);
-        config.setDriverClassName("org.postgresql.Driver");
+        config.setDriverClassName("com.impossibl.postgres.jdbc.PGDriver");
 
         //config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
 

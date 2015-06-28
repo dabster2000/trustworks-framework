@@ -15,13 +15,11 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.4.5" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.4.5" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.4.5" level="project" />
-    <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.4-1201-jdbc41" level="project" />
-    <orderEntry type="library" name="Maven: org.mariadb.jdbc:mariadb-java-client:1.1.7" level="project" />
-    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:3.3.0" level="project" />
-    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:platform:3.3.0" level="project" />
     <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:2.3.8" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.10" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.18.2-GA" level="project" />
+    <orderEntry type="library" name="Maven: com.impossibl.pgjdbc-ng:pgjdbc-ng:0.5" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-all:4.0.27.Final" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-recipes:2.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-framework:2.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-client:2.7.1" level="project" />
