@@ -71,11 +71,10 @@ public final class Helper {
         config.setUsername(user);
         config.setPassword(password);
         config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        //config.addDataSourceProperty("cachePrepStmts", "true");
+        //config.addDataSourceProperty("prepStmtCacheSize", "250");
         //config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.addDataSourceProperty("maximumPoolSize", "10");
-        HikariDataSource ds = new HikariDataSource(config);
+        //config.addDataSourceProperty("maximumPoolSize", "10");
 
         //ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(uri, user, password);
         //
@@ -94,6 +93,6 @@ public final class Helper {
 
         return new PoolingDataSource<>(connectionPool);
         */
-        return ds;
+        return new HikariDataSource(config);
     }
 }
