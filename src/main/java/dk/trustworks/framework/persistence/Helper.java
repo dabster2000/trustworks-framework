@@ -65,7 +65,7 @@ public final class Helper {
     private static DataSource newDataSource(String uri,
                                     String user,
                                     String password) {
-
+        log.debug("uri: "+uri);
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(uri);
         config.setUsername(user);
