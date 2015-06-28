@@ -70,6 +70,8 @@ public final class Helper {
         config.setJdbcUrl(uri);
         config.setUsername(user);
         config.setPassword(password);
+        config.setDriverClassName("org.postgresql.Driver");
+
         //config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
 
         //config.addDataSourceProperty("cachePrepStmts", "true");
