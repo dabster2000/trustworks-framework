@@ -23,11 +23,13 @@ public final class Helper {
     private final Sql2o sql2o;
 
     private Helper() {
+        /*
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             log.error("LOG00820:", e);
         }
+        */
         Properties properties = new Properties();
         try (InputStream in = Helper.class.getResourceAsStream("server.properties")) {
             properties.load(in);
@@ -68,11 +70,11 @@ public final class Helper {
         config.setJdbcUrl(uri);
         config.setUsername(user);
         config.setPassword(password);
+        config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         config.addDataSourceProperty("maximumPoolSize", "5");
-
         HikariDataSource ds = new HikariDataSource(config);
 
         //ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(uri, user, password);
