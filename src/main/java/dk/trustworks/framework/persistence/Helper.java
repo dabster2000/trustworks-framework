@@ -70,7 +70,8 @@ public final class Helper {
         config.setJdbcUrl(uri);
         config.setUsername(user);
         config.setPassword(password);
-        config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
+        //config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
+
         //config.addDataSourceProperty("cachePrepStmts", "true");
         //config.addDataSourceProperty("prepStmtCacheSize", "250");
         //config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
