@@ -1,6 +1,8 @@
 package dk.trustworks.framework.service;
 
 import dk.trustworks.framework.persistence.GenericRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -10,9 +12,18 @@ import java.util.Map;
  */
 public abstract class DefaultLocalService implements DefaultService {
 
+    private static final Logger log = LogManager.getLogger(DefaultLocalService.class);
+
     public abstract GenericRepository getGenericRepository();
 
     protected DefaultLocalService() {
+    }
+
+    @Override
+    public List<Map<String, Object>> findByParentUUID(String entityName, String parentUUIDName, String parentUUID) {
+        log.debug("DefaultLocalService.findByParentUUID");
+        log.debug("entityName = [" + entityName + "], parentUUIDName = [" + parentUUIDName + "], parentUUID = [" + parentUUID + "]");
+        return getGenericRepository().findByParentUUID(entityName, parentUUIDName, parentUUID);
     }
 
     @Override

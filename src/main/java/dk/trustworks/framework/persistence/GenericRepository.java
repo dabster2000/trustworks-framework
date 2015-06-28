@@ -27,6 +27,23 @@ public abstract class GenericRepository implements DefaultRestInterface {
     }
 
     @Override
+    public List<Map<String, Object>> findByParentUUID(String entityName, String parentUUIDName, String parentUUID) {
+        logger.debug("GenericRepository.findByParentUUID");
+        logger.debug("entityName = [" + entityName + "], parentUUIDName = [" + parentUUIDName + "], parentUUID = [" + parentUUID + "]");
+
+        try (Connection con = database.open()) {
+            return getEntitiesFromMapSet(con.createQuery("SELECT * FROM " + entityName + " WHERE " + parentUUIDName + " LIKE :uuid")
+                    .addParameter("uuid", parentUUID)
+                    .executeAndFetchTable()
+                    .asList());
+        } catch (Exception e) {
+            logger.error("LOG00260:", e);
+        }
+
+        return null;
+    }
+
+    @Override
     public List<Map<String, Object>> getAllEntities(String entityName) {
         logger.debug("GenericRepository.getAllEntities");
         logger.debug("entityName = [" + entityName + "]");

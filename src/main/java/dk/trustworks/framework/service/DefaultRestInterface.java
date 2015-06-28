@@ -10,6 +10,9 @@ import java.util.Map;
  * Created by hans on 24/04/15.
  */
 public interface DefaultRestInterface {
+
+    List<Map<String, Object>> findByParentUUID(String entityName, String parentUUIDName, String parentUUID);
+
     List<Map<String, Object>> getAllEntities(String entityName);
 
     Map<String, Object> getOneEntity(String entityName, String uuid);

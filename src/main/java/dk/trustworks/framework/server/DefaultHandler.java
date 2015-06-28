@@ -85,9 +85,29 @@ public abstract class DefaultHandler implements HttpHandler {
         if(exchange.getQueryParameters().get("projection") != null) {
             for (Map<String, Object> map : allEntities) {
                 for (String projectionTree : exchange.getQueryParameters().get("projection")) {
-                    map.putAll(loadChildEntities(map, new LinkedList<>(Arrays.asList(projectionTree.split("/")))));
+                    map.putAll(loadParentEntities(map, new LinkedList<>(Arrays.asList(projectionTree.split("/")))));
                 }
             }
+        }
+        if(exchange.getQueryParameters().get("children") != null) {
+            try {
+                logger.debug("child projection");
+                for (Map<String, Object> map : allEntities) {
+                    logger.debug("entity: " + entity);
+                    loadChildEntities(map, new LinkedList<>(Arrays.asList(exchange.getQueryParameters().get("children").getFirst().split("/"))), entity + "uuid", 0);
+                }
+            } catch (Exception e) {
+                logger.error("LOG00850:", e);
+            }
+
+
+            /*
+            for (Map<String, Object> map : allEntities) {
+                for (String projectionTree : exchange.getQueryParameters().get("children")) {
+                    map.putAll(loadChildEntities(map, new LinkedList<>(Arrays.asList(projectionTree.split("/")))), 0);
+                }
+            }
+            */
         }
         exchange.getResponseSender().send(mapper.writeValueAsString(allEntities));
     }
@@ -96,7 +116,7 @@ public abstract class DefaultHandler implements HttpHandler {
         Map<String, Object> entity = getService().getOneEntity(this.entity, uuid);
         if(exchange.getQueryParameters().get("projection") != null) {
             for (String projectionTree : exchange.getQueryParameters().get("projection")) {
-                entity.putAll(loadChildEntities(entity, new LinkedList<>(Arrays.asList(projectionTree.split("/")))));
+                entity.putAll(loadParentEntities(entity, new LinkedList<>(Arrays.asList(projectionTree.split("/")))));
             }
         }
         exchange.getResponseSender().send(mapper.writeValueAsString(entity));
@@ -125,7 +145,7 @@ public abstract class DefaultHandler implements HttpHandler {
             if (exchange.getQueryParameters().get("projection") != null) {
                 for (Map<String, Object> map : result) {
                     for (String projectionTree : exchange.getQueryParameters().get("projection")) {
-                        map.putAll(loadChildEntities(map, new LinkedList<>(Arrays.asList(projectionTree.split("/")))));
+                        map.putAll(loadParentEntities(map, new LinkedList<>(Arrays.asList(projectionTree.split("/")))));
                     }
                 }
             }
@@ -133,7 +153,7 @@ public abstract class DefaultHandler implements HttpHandler {
         }
     }
 
-    private Map<String, Object> loadChildEntities(Map<String, Object> map, List<String> projectionTree) {
+    private Map<String, Object> loadParentEntities(Map<String, Object> map, List<String> projectionTree) {
         String key = projectionTree.remove(0);
         Map<String, Object> childEntities = new HashMap<>();
         Map<String, DefaultService> services = ServiceRegistry.getInstance().getServices();
@@ -141,12 +161,31 @@ public abstract class DefaultHandler implements HttpHandler {
             if(map.size() == 0) return childEntities;
             Map<String, Object> projection = services.get(key).getOneEntity(services.get(key).getResourcePath(),  map.get(key).toString());
             logger.debug("projection = " + projection);
-            if(projectionTree.size() > 0) projection.putAll(loadChildEntities(projection, projectionTree));
+            if(projectionTree.size() > 0) projection.putAll(loadParentEntities(projection, projectionTree));
             childEntities.put(key.substring(0, key.length() - 4), projection);
         }
         logger.debug("projectionTree = " + projectionTree.size());
 
         return childEntities;
+    }
+
+    private void loadChildEntities(Map<String, Object> map, List<String> projectionTree, String parentUUIDName, int level) {
+        logger.debug("DefaultHandler.loadChildEntities");
+        logger.debug("map = [" + map + "], projectionTree = [" + projectionTree + "], parentUUIDName = [" + parentUUIDName + "], level = [" + level + "]");
+        String key = projectionTree.get(level);
+        Map<String, DefaultService> services = ServiceRegistry.getInstance().getServices();
+        if(services.containsKey(key)) {
+            List<Map<String, Object>> children = services.get(key).findByParentUUID(services.get(key).getResourcePath(), parentUUIDName, (String) map.get("uuid"));
+            logger.debug("children.size() = {}", children.size());
+            if(children.size() == 0) return;
+            map.put(key.replaceFirst("uuid", "s"), children);
+            level++;
+            if(level>projectionTree.size()-1) return;
+            for (Map<String, Object> child : children) {
+                loadChildEntities(child, projectionTree, key, level);
+            }
+        }
+        logger.debug("projectionTree = " + projectionTree.size());
     }
 
     protected abstract DefaultLocalService getService();
